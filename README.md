@@ -2,25 +2,27 @@
 
 ## 简介
 
-TFC群峦传说的锻造公式图形化计算器，在java1.8下编写，内置了群峦传说:次世代中所有锻造品的相关信息，可通过jar或exe运行。
+TFC群峦传说的锻造公式图形化计算器，在java1.8下编写，内置了群峦传说:次世代中所有锻造品的相关信息。
+
+[Releases](https://github.com/EnableAria/TFC-BestFormula/releases)
 
 ## 程序界面
 
-![](img\main.png "主程序")
+![](/img/main.png "主程序")
 
 ## 如何获取目标值
 
-可以通过在游戏内载入""下的""资源包，以准确获取目标值。该资源包版本为1.18。
+可以通过在游戏内载入&nbsp;[TFC-Forging-Assistance.zip](https://github.com/EnableAria/TFC-BestFormula/releases)&nbsp;资源包，以准确获取目标值。该资源包版本为1.18。
 
-游戏内资源包的运行效果如下所示
+游戏内资源包的效果如下所示
 
-![](img\game.png "资源包界面")
+![](/img/game.png "资源包界面")
 
 ## 如何添加锻造项目
 
 ### 添加锻造项目数据
 
-在项目源码内的""下的""可以增加相应文本行即可，注意文本内总行数不能超过54。
+在项目源码内的"TFC&nbsp;BestFormula\src\TFCBestFormula\forging_text"下的"forging_text.txt"增加相应文本行即可，注意文本内总行数不能超过54。
 
 文本内项目属性为
 
@@ -80,8 +82,8 @@ TFC群峦传说的锻造公式图形化计算器，在java1.8下编写，内置�
 
 ### 添加锻造项目图片
 
-在项目源码内的""下增添相应16*16的png格式图片，图片名称需与""中图片名保持一致。
+在项目源码内的"TFC&nbsp;BestFormula\src\TFCBestFormula\image\tool_head"下增添相应16*16的png格式图片，图片名称需与""中图片名保持一致。
 
 ### 添加基底金属
 
-暂时无法添加
+暂时无法添加。
