@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TFC BestFormula:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TFC_BestFormula_jar</output-path>
+    <root id="archive" name="TFC BestFormula.jar">
+      <element id="module-output" name="TFC BestFormula" />
+    </root>
+  </artifact>
+</component>
