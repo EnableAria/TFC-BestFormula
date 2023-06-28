@@ -86,7 +86,7 @@ TFC群峦传说的锻造公式图形化计算器，利用java1.8编写，内置�
 
 ### 添加锻造项目图片
 
-在项目源文件内的"TFC&nbsp;BestFormula\src\TFCBestFormula\image\tool_head"下增添相应16*16的png格式图片，图片名称需与"forging_text.txt"中图片名保持一致。
+在项目源文件内的"TFC&nbsp;BestFormula\src\TFCBestFormula\image\tool_head"下增添相应16*16的png格式图片，图片名称必须与"forging_text.txt"中图片名保持一致。
 
 ### 添加基底金属
 
