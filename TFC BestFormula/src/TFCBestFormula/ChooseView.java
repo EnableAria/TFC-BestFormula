@@ -24,16 +24,16 @@ public class ChooseView extends JPanel {
         mainPanel.setBounds(0, 0, width, height);
         mainPanel.setOpaque(false);
 
-        title = new JLabel("选择");
+        title = new JLabel(ConfigLoad.langText[9]);
         title.setFont(new Font(null,Font.PLAIN,14));
         title.setBounds(13, 6, 40, 20);
         mainPanel.add(title);
 
-        itemButton = new JButton[ForgingText.itemNum];
-        for(int i = 0; i < ForgingText.itemNum; i++){
+        itemButton = new JButton[ConfigLoad.itemNum];
+        for(int i = 0; i < ConfigLoad.itemNum; i++){
             int j = i / 9;
-            itemButton[i] = ImgCreator.createForgingJButton(chooseX + (chooseInterval * (i - (9 * j))), chooseY + (chooseInterval * j), ForgingText.forgingText[i][0]);
-            itemButton[i].setToolTipText(ForgingText.forgingText[i][1]);
+            itemButton[i] = ImgCreator.createForgingJButton(chooseX + (chooseInterval * (i - (9 * j))), chooseY + (chooseInterval * j), i);
+            itemButton[i].setToolTipText(ConfigLoad.forgingText[i][1]);
             itemButton[i].setName(i + "");
             mainPanel.add(itemButton[i]);
         }

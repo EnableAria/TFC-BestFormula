@@ -1,6 +1,6 @@
 package TFCBestFormula;
 
-public class Calculator {
+public class Calculator {   //计算器类
     int target;
     int[] required;
     int[] output;
@@ -12,7 +12,7 @@ public class Calculator {
 
     public int[] calculation(){
         int i;
-        for(i = 1; i <= 12; i++){
+        for(i = 1; i <= 12; i++){   //每次往上增加最大计算位数
             output = Calculation.run(i, target, required);
             if(output[0] != 0){
                 break;
@@ -22,7 +22,7 @@ public class Calculator {
     }
 }
 
-class Calculation{
+class Calculation{  //具体计算类
     public static int[] value = {-3, -6, 2, 7, -9, -15, 13, 16};
     public static int[] run(int n, int target, int[] required){
         int j, k = 0, target_c;
@@ -34,11 +34,12 @@ class Calculation{
             target_c = 0;
             o = i;
             for(j = 0; j < n; j++){ //十进制转八进制
+                if((((o / 8) % 8) < (o % 8)) && (j != n - 1)){
+                    break;
+                }
                 octal[n - j - 1] = (int)(o % 8);
                 o /= 8;
-            }
-            for(j = 0; j < n; j++){ //计算
-                target_c += value[octal[j]];
+                target_c += value[octal[n - j - 1]];
             }
             target_c += (value[required[0]] + value[required[1]] + value[required[2]]);
 

@@ -17,7 +17,7 @@ public class MainUI extends JFrame {
     }
 
     public void init(){
-        ForgingText.loadForgingText();
+        ConfigLoad.load();
         ChooseButtonListener.setMainUI(this);
         ItemButtonListener.setMainUI(this);
         setIconImage(JarFileInput.loadJarImg("image/ico.png"));

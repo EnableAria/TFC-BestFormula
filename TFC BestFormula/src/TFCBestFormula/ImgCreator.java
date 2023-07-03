@@ -1,10 +1,13 @@
 package TFCBestFormula;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
-public class ImgCreator {
+public class ImgCreator {   //附图控件创建类
     public static JPanel createBgImgJPanel(int x, int y, String imgSrc){    //创建附带背景图的面板
         ImageIcon imageIcon = new ImageIcon(JarFileInput.loadJarImg(imgSrc));
         JPanel jPanel = new JPanel(null);
@@ -26,24 +29,33 @@ public class ImgCreator {
         return jButton;
     }
 
-    public static JButton createChooseJButton(int x, int y, String imgName){    //创建附带背景图和图标的按钮(选择按钮)
+    public static JButton createChooseJButton(int x, int y, String imgNum){    //创建附带背景图和图标的按钮(选择按钮)
         try{
             JButton jButton = new JButton();
             BufferedImage bgImage = JarFileInput.loadJarBufferedImg("image/button.png");
             BufferedImage icoImage;
             Graphics2D g2d;
-            if(imgName.isEmpty()){
+            if(imgNum.isEmpty()){
                 icoImage = JarFileInput.loadJarBufferedImg("image/reel.png");
-                jButton.setToolTipText("选择锻造品");
-                g2d = bgImage.createGraphics();
-                g2d.drawImage(icoImage, 2, 2, icoImage.getWidth(), icoImage.getHeight(), null);
+                jButton.setToolTipText(ConfigLoad.langText[10]);
             }
             else{
-                icoImage = JarFileInput.loadJarBufferedImg("image/tool_head/" + imgName + ".png");
-                jButton.setToolTipText(ForgingText.forgingText[AnvilView.runNum][1]);
-                g2d = bgImage.createGraphics();
-                g2d.drawImage(icoImage, 2, 2, icoImage.getWidth()*2, icoImage.getHeight()*2, null);
+                int num = Integer.parseInt(imgNum);
+                if(num < ConfigLoad.internalNum){
+                    icoImage = JarFileInput.loadJarBufferedImg("image/tool_head/" + ConfigLoad.forgingText[num][0] + ".png");
+                }
+                else {
+                    try{
+                        icoImage = ImageIO.read(new FileInputStream(ConfigLoad.path + "image/" + ConfigLoad.forgingText[num][0] + ".png"));
+                    }
+                    catch (FileNotFoundException e){
+                        icoImage = JarFileInput.loadJarBufferedImg("image/need_metal/unknown.png");
+                    }
+                }
+                jButton.setToolTipText(ConfigLoad.forgingText[AnvilView.runNum][1]);
             }
+            g2d = bgImage.createGraphics();
+            g2d.drawImage(icoImage, 2, 2, 32, 32, null);
             g2d.dispose();
             ImageIcon imageIcon = new ImageIcon(bgImage);
             jButton.setBounds(x, y, imageIcon.getIconWidth(), imageIcon.getIconHeight());
@@ -59,12 +71,23 @@ public class ImgCreator {
         return null;
     }
 
-    public static JButton createForgingJButton(int x, int y, String imgName){   //创建附带背景图和图标的按钮(工具按钮)
+    public static JButton createForgingJButton(int x, int y, int num){   //创建附带背景图和图标的按钮(工具按钮)
         try{
+            BufferedImage icoImage;
             BufferedImage bgImage = JarFileInput.loadJarBufferedImg("image/button.png");
-            BufferedImage icoImage = JarFileInput.loadJarBufferedImg("image/tool_head/" + imgName + ".png");
+            if(num < ConfigLoad.internalNum){
+                icoImage = JarFileInput.loadJarBufferedImg("image/tool_head/" + ConfigLoad.forgingText[num][0] + ".png");
+            }
+            else {
+                try{
+                    icoImage = ImageIO.read(new FileInputStream(ConfigLoad.path + "image/" + ConfigLoad.forgingText[num][0] + ".png"));
+                }
+                catch (FileNotFoundException e){
+                    icoImage = JarFileInput.loadJarBufferedImg("image/need_metal/unknown.png");
+                }
+            }
             Graphics2D g2d = bgImage.createGraphics();
-            g2d.drawImage(icoImage, 2, 2, icoImage.getWidth()*2, icoImage.getHeight()*2, null);
+            g2d.drawImage(icoImage, 2, 2, 32, 32, null);
             g2d.dispose();
             ImageIcon imageIcon = new ImageIcon(bgImage);
             JButton jButton = new JButton();
@@ -81,11 +104,38 @@ public class ImgCreator {
         return null;
     }
 
-    public static JLabel createImgJLabel(int x, int y, String imgSrc){   //创建图片标签
-        ImageIcon imageIcon = new ImageIcon(JarFileInput.loadJarBufferedImg(imgSrc));
+    public static JLabel createImgJLabel(int x, int y, String imgSrc){   //创建图片标签(内部)
+        BufferedImage nullImage = JarFileInput.loadJarBufferedImg("image/null.png");
+        BufferedImage image = JarFileInput.loadJarBufferedImg(imgSrc);
+        Graphics2D g2d = nullImage.createGraphics();
+        g2d.drawImage(image, 0, 0, 32, 32, null);
+        g2d.dispose();
         JLabel jLabel = new JLabel();
-        jLabel.setBounds(x, y, imageIcon.getIconWidth(), imageIcon.getIconHeight());
-        jLabel.setIcon(imageIcon);
+        jLabel.setBounds(x, y, 32, 32);
+        jLabel.setIcon(new ImageIcon(nullImage));
+        return jLabel;
+    }
+
+    public static JLabel createImgJLabel(int x, int y, int num){    //创建图片标签(外部)
+        BufferedImage nullImage = JarFileInput.loadJarBufferedImg("image/null.png");
+        BufferedImage image;
+        JLabel jLabel = new JLabel();
+        try {
+            try {
+                image = ImageIO.read(new FileInputStream(ConfigLoad.path + "image/" + ConfigLoad.forgingText[num][8] + ".png"));
+            }
+            catch (FileNotFoundException e){
+                image = JarFileInput.loadJarBufferedImg("image/need_metal/unknown.png");
+            }
+            Graphics2D g2d = nullImage.createGraphics();
+            g2d.drawImage(image, 0, 0, 32, 32, null);
+            g2d.dispose();
+            jLabel.setBounds(x, y, 32, 32);
+            jLabel.setIcon(new ImageIcon(nullImage));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return jLabel;
     }
 

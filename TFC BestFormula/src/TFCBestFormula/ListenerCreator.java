@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
 
-public class ListenerCreator{
+public class ListenerCreator {   //自定义监听类
     public static TargetSliderListener createTargetSliderListener(JTextField target){   //目标滑块监听器创建方法
         TargetSliderListener targetSliderListener = new TargetSliderListener();
         targetSliderListener.setTarget(target);
@@ -38,7 +38,7 @@ public class ListenerCreator{
         return new ItemButtonListener();
     }
 
-    public static StartButtonListener createStartButtonListener(ImgJSlider targetSlider, JTextArea log){
+    public static StartButtonListener createStartButtonListener(ImgJSlider targetSlider, JTextArea log){    //开始按钮监听器创建方法
         StartButtonListener startButtonListener = new StartButtonListener();
         startButtonListener.setImgJSlider(targetSlider);
         startButtonListener.setLog(log);
@@ -46,7 +46,7 @@ public class ListenerCreator{
     }
 }
 
-class TargetSliderListener implements ChangeListener{   //目标滑块监听类
+class TargetSliderListener implements ChangeListener {   //目标滑块监听类
     JTextField target;
     public void stateChanged(ChangeEvent e){
         ImgJSlider imgJSlider = (ImgJSlider)e.getSource();
@@ -59,7 +59,7 @@ class TargetSliderListener implements ChangeListener{   //目标滑块监听类
     }
 }
 
-class TargetListener implements KeyListener{    //目标输入框监听类
+class TargetListener implements KeyListener {    //目标输入框监听类
     JTextField target;
     ImgJSlider targetSlider;
     public void keyPressed(KeyEvent e){
@@ -106,7 +106,7 @@ class TargetListener implements KeyListener{    //目标输入框监听类
     }
 }
 
-class StepButtonListener implements ActionListener{ //步骤按钮监听类
+class StepButtonListener implements ActionListener { //步骤按钮监听类
     int buttonValue;
     ImgJSlider forgingSlider;
     public void actionPerformed(ActionEvent e){
@@ -129,7 +129,7 @@ class StepButtonListener implements ActionListener{ //步骤按钮监听类
     }
 }
 
-class ChooseButtonListener implements ActionListener{   //选择按钮监听类
+class ChooseButtonListener implements ActionListener {   //选择按钮监听类
     public static MainUI mainUI;
     public static void setMainUI(MainUI mainUI){
         ChooseButtonListener.mainUI = mainUI;
@@ -142,10 +142,9 @@ class ChooseButtonListener implements ActionListener{   //选择按钮监听类
     }
 }
 
-class ItemButtonListener implements ActionListener{ //工具按钮监听类
+class ItemButtonListener implements ActionListener { //工具按钮监听类
     public static MainUI mainUI;
-    public static String[] order = {"倒数第三", "倒数第二", "末尾", "非最末", "任意"};
-    public static String[] needMetalTip = {"", "锭", "双锭", "薄板", "双层薄板", "生铁方坯", "精铁方坯", "高碳任意钢锭", "锻铁薄板", "锻铁双层薄板", "红/蓝钢薄板"};
+    public static String[] order = Arrays.copyOfRange(ConfigLoad.langText, 22, 27);
     public static void setMainUI(MainUI mainUI){
         ItemButtonListener.mainUI = mainUI;
     }
@@ -154,23 +153,47 @@ class ItemButtonListener implements ActionListener{ //工具按钮监听类
         int num = Integer.parseInt(itemButton.getName());
         AnvilView.runNum = num;
         mainUI.anvilView.mainPanel.remove(mainUI.anvilView.choose);
-        mainUI.anvilView.choose = ImgCreator.createChooseJButton(42, 82, ForgingText.forgingText[num][0]);
+        mainUI.anvilView.choose = ImgCreator.createChooseJButton(42, 82, num + "");
         mainUI.anvilView.mainPanel.add(mainUI.anvilView.choose);
         mainUI.anvilView.mainPanel.remove(mainUI.anvilView.needMetal);
-        mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/needMetal_" + ForgingText.forgingText[num][8] +".png");
-        mainUI.anvilView.needMetal.setToolTipText("需要" + needMetalTip[Integer.parseInt(ForgingText.forgingText[num][8])]);
+        if(num < ConfigLoad.internalNum){
+            mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][0] + ".png");
+            mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][1]);
+        }
+        else {
+            int i, j = 1;
+            for(i = 0; i < ConfigLoad.internalMetalNum; i++){
+                if(ConfigLoad.forgingText[num][8].equals(ConfigLoad.needMetalText[i][0])){
+                    j = 0;
+                    break;
+                }
+            }
+            if(j == 0){
+                mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.forgingText[num][8] + ".png");
+                mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[i][1]);
+            }
+            else{
+                for(i = 0; i < ConfigLoad.externalMetalNum; i++){
+                    if(ConfigLoad.forgingText[num][8].equals(ConfigLoad.needMetalText[ConfigLoad.internalMetalNum + i][0])){
+                        break;
+                    }
+                }
+                mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, num);
+                mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[ConfigLoad.internalMetalNum + i][1]);
+            }
+        }
         mainUI.anvilView.mainPanel.add(mainUI.anvilView.needMetal);
         for(int i = 0; i < 3; i++){
             mainUI.anvilView.mainPanel.remove(mainUI.anvilView.showLabel[i]);
-            mainUI.anvilView.showLabel[i] = ImgCreator.createImgShowJLabel(194 - (38 * i), 14, Integer.parseInt(ForgingText.forgingText[num][i + 5]), Integer.parseInt(ForgingText.forgingText[num][i + 2]));
-            if(!ForgingText.forgingText[num][i + 2].equals("0")){
-                mainUI.anvilView.showLabel[i].setToolTipText(AnvilView.forgingName[Integer.parseInt(ForgingText.forgingText[num][i + 2]) - 1] + " " + order[Integer.parseInt(ForgingText.forgingText[num][i + 5]) - 1]);
+            mainUI.anvilView.showLabel[i] = ImgCreator.createImgShowJLabel(194 - (38 * i), 14, Integer.parseInt(ConfigLoad.forgingText[num][i + 5]), Integer.parseInt(ConfigLoad.forgingText[num][i + 2]));
+            if(!ConfigLoad.forgingText[num][i + 2].equals("0")){
+                mainUI.anvilView.showLabel[i].setToolTipText(AnvilView.forgingName[Integer.parseInt(ConfigLoad.forgingText[num][i + 2]) - 1] + " " + order[Integer.parseInt(ConfigLoad.forgingText[num][i + 5]) - 1]);
             }
             mainUI.anvilView.mainPanel.add(mainUI.anvilView.showLabel[i]);
         }
         mainUI.anvilView.mainPanel.remove(mainUI.anvilView.hammer);
         mainUI.anvilView.hammer = ImgCreator.createImgJLabel(258, 136, "image/hammer.png");
-        mainUI.anvilView.hammer.setToolTipText("需要锤子");
+        mainUI.anvilView.hammer.setToolTipText(ConfigLoad.langText[12]);
         mainUI.anvilView.mainPanel.add(mainUI.anvilView.hammer);
         mainUI.remove(mainUI.chooseView);
         mainUI.add(mainUI.anvilView);
@@ -179,7 +202,7 @@ class ItemButtonListener implements ActionListener{ //工具按钮监听类
     }
 }
 
-class StartButtonListener implements ActionListener{
+class StartButtonListener implements ActionListener {   //开始按钮监听类
     ImgJSlider targetSlider;
     JTextArea log;
     public void actionPerformed(ActionEvent e){

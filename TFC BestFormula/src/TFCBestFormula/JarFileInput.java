@@ -6,8 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class JarFileInput {
-    public static Image loadJarImg(String fileSrc){
+public class JarFileInput {  //文件加载类
+    public static Image loadJarImg(String fileSrc){ //内部图片加载类(Image)
         Image image = null;
         InputStream is = JarFileInput.class.getResourceAsStream(fileSrc);
         try {
@@ -20,7 +20,7 @@ public class JarFileInput {
         return image;
     }
 
-    public static BufferedImage loadJarBufferedImg(String fileSrc){
+    public static BufferedImage loadJarBufferedImg(String fileSrc){ //内部图片加载类(BufferedImage)
         BufferedImage bufferedImage = null;
         InputStream is = JarFileInput.class.getResourceAsStream(fileSrc);
         try {

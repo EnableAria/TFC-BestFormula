@@ -2,10 +2,11 @@ package TFCBestFormula;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 
 public class AnvilView extends JPanel {
-    public static String[] forgingName = {"轻击", "击打", "冲压", "弯曲", "重击", "牵拉", "镦锻", "收缩"};
+    public static String[] forgingName = Arrays.copyOfRange(ConfigLoad.langText, 0, 8);
     public static int runNum = -1;
     int width = 368, height = 453;
     JLayeredPane pane;
@@ -38,7 +39,7 @@ public class AnvilView extends JPanel {
         mainPanel.add(needMetal);
         mainPanel.add(hammer);
         mainPanel.add(flux);
-        title = new JLabel("砧");
+        title = new JLabel(ConfigLoad.langText[8]);
         title.setFont(new Font(null,Font.PLAIN,14));
         title.setBounds(13, 6, 20, 20);
         mainPanel.add(title);
@@ -63,7 +64,9 @@ public class AnvilView extends JPanel {
         mainPanel.add(target);
         log = new JTextArea();
         log.setFont(new Font(null,Font.PLAIN,14));
-        log.setBounds(16, 250, 320, 148);
+        log.setForeground(Color.white);
+        log.setBounds(21, 250, 315, 148);
+        log.setText(ConfigLoad.logText_1 + "\n" + ConfigLoad.logText_2);
         log.setOpaque(false);
         log.setEditable(false);
         mainPanel.add(log);
