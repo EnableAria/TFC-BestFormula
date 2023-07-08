@@ -67,7 +67,7 @@ refined_bloom 精铁方坯 2 2 2 1 2 3 test
 >
 >5 任意
 
-基底金属名:
+基底金属名(内置):
 
 >unknown 不明
 >
