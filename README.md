@@ -24,7 +24,7 @@ TFC群峦传说的锻造公式图形化计算器，利用java1.8编写，内置�
 
 ### 添加锻造项目数据文件
 
-在 "config"文件夹 内，创建 "forging.txt"文本文档文件 ，并在文档内添加锻造项目属性。
+在 "config"文件夹 内，创建 "forging.txt"文本文档文件，并在文档内添加锻造项目属性。
 
 文档内锻造项目属性格式为:
 
@@ -89,11 +89,11 @@ refined_bloom 精铁方坯 2 2 2 1 2 3 test
 >
 >wrought_iron_double_sheet 锻铁双层薄板
 >
->red_or_blue_steel_sheet 红/蓝钢锭
+>red_or_blue_steel_sheet 红/蓝钢薄板
 
 ### 添加基底金属数据文件
 
-在 "config"文件夹 内，创建 "need_metal.txt"文本文档文件 ，并在文档内添加基底金属属性即可。
+在 "config"文件夹 内，创建 "need_metal.txt"文本文档文件，并在文档内添加基底金属属性即可。
 
 文档内基底金属属性格式为:
 
