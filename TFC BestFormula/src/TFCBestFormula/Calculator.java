@@ -41,7 +41,11 @@ class Calculation{  //具体计算类
                 o /= 8;
                 target_c += value[octal[n - j - 1]];
             }
-            target_c += (value[required[0]] + value[required[1]] + value[required[2]]);
+            for(int t = 0; t < 3; t++){
+                if(required[t] != -1){
+                    target_c += value[required[t]];
+                }
+            }
 
             if(target == target_c){ //校验
                 System.arraycopy(octal, 0, output, 0, octal.length);
