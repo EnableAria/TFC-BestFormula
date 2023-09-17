@@ -11,14 +11,27 @@ public class Log {  //日志输出类
             log.setText(ConfigLoad.langText[13] + "\n");
             Calculator calculator = new Calculator();
             int[] required = new int[3];
-            String[] requiredS = Arrays.copyOfRange(ConfigLoad.forgingText[AnvilView.runNum], 2, 5);
+            String[] requiredS;
             if(output != null){
                 for(int i = 0; i < output.length; i++){ //清除历史输出标签
                     anvilView.mainPanel.remove(anvilView.logLabel[i]);
                 }
             }
-            for(int i = 0; i < 3; i++){
-                required[i] = Integer.parseInt(requiredS[i]) - 1;
+            if(AnvilView.runNum >= ConfigLoad.internalNum){ //整理末三步步骤
+                int[][] sortArray = new int[2][3];
+                requiredS = Arrays.copyOfRange(ConfigLoad.forgingText[AnvilView.runNum], 2, 8);
+                for(int i = 0; i < 2; i++){
+                    for(int j = 0; j < 3; j++){
+                        sortArray[i][j] = Integer.parseInt(requiredS[(i * 3) + j]);
+                    }
+                }
+                required = sort(sortArray);
+            }
+            else{
+                requiredS = Arrays.copyOfRange(ConfigLoad.forgingText[AnvilView.runNum], 2, 5);
+                for(int i = 0; i < 3; i++){
+                    required[i] = Integer.parseInt(requiredS[i]) - 1;
+                }
             }
             calculator.setValue(target, required);
             output = calculator.calculation();
@@ -47,6 +60,39 @@ public class Log {  //日志输出类
         else{
             log.setText(ConfigLoad.langText[16]);   //未选择锻造目标
         }
+    }
+
+    private static int[] sort(int[][] sortArray){   //外置锻造方法排序
+        int[] t = new int[2];
+        for(int i = 0; i < 3; i++){ //冒泡排序
+            for(int j = 0; j < i; j++){
+                if(sortArray[1][i] < sortArray[1][j]){
+                    for(int k = 0; k < 2; k++){
+                        t[k] = sortArray[k][i];
+                        sortArray[k][i] = sortArray[k][j];
+                        sortArray[k][j] = t[k];
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < 3; i++){ //再排序
+            for(int j = 0; j < 3; j++){
+                if(j == i){
+                    continue;
+                }
+                if(sortArray[1][j] == (i + 1)){
+                    for(int k = 0; k < 2; k++){
+                        t[k] = sortArray[k][i];
+                        sortArray[k][i] = sortArray[k][j];
+                        sortArray[k][j] = t[k];
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < 3; i++){
+            sortArray[0][i] -= 1;
+        }
+        return sortArray[0];
     }
 
     public static void setAnvilView(AnvilView anvilView){
