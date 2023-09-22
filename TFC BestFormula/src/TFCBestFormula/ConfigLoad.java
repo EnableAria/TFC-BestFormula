@@ -8,13 +8,17 @@ public class ConfigLoad {    //配置加载类
     public static int itemNum = 0, internalNum = 0, externalNum = 0, internalMetalNum = 0, externalMetalNum = 0;
     public static String path, logText_1, logText_2;
     public static String[] langText;
+    public static String[][] recipeID;
+    public static String[][] metalList;
     public static String[][] forgingText = new String[90][9];
     public static String[][] needMetalText = new String[90][2];
     public static void load(){
         getPath();
         loadLangText();
+        loadMetalListText();
         loadForgingText();
         loadNeedMetalText();
+        loadRecipeIDText();
     }
 
     public static void getPath(){   //获取项目所在路径
@@ -33,7 +37,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void loadLangText(){  //加载文本文件
         int i;
-        langText = new String[27];
+        langText = new String[30];
         try {
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/lang.ini");
             assert inputStream != null;
@@ -41,6 +45,47 @@ public class ConfigLoad {    //配置加载类
             Scanner reader = new Scanner(inputStreamReader);
             for(i = 0; reader.hasNext(); i++){
                 langText[i] = reader.next();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadRecipeIDText(){  //加载配方数据文件
+        int i;
+        recipeID = new String[itemNum][2];
+        try {
+            InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/recipe_id.ini");
+            assert inputStream != null;
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            Scanner reader = new Scanner(inputStreamReader);
+            for(i = 0; reader.hasNext(); i++){
+                recipeID[i][0] = reader.next();
+                recipeID[i][1] = reader.next();
+            }
+            while(i < itemNum){
+                recipeID[i][0] = "";
+                recipeID[i][1] = "0";
+                i++;
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadMetalListText(){ //加载金属列表文件
+        int i;
+        metalList = new String[19][2];
+        try {
+            InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/metal_list.ini");
+            assert inputStream != null;
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            Scanner reader = new Scanner(inputStreamReader);
+            for(i = 0; reader.hasNext(); i++){
+                metalList[i][0] = reader.next();
+                metalList[i][1] = reader.next();
             }
         }
         catch(Exception e){

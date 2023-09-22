@@ -29,7 +29,7 @@ public class ImgCreator {   //附图控件创建类
         return jButton;
     }
 
-    public static JButton createChooseJButton(int x, int y, String imgNum){    //创建附带背景图和图标的按钮(选择按钮)
+    public static JButton createChooseJButton(int x, int y, String imgNum){    //创建附带背景图和图标的按钮(工具选择按钮)
         try{
             JButton jButton = new JButton();
             BufferedImage bgImage = JarFileInput.loadJarBufferedImg("image/button.png");
@@ -37,7 +37,7 @@ public class ImgCreator {   //附图控件创建类
             Graphics2D g2d;
             if(imgNum.isEmpty()){
                 icoImage = JarFileInput.loadJarBufferedImg("image/reel.png");
-                jButton.setToolTipText(ConfigLoad.langText[10]);
+                jButton.setToolTipText(ConfigLoad.langText[9] + ConfigLoad.langText[10]);
             }
             else{
                 int num = Integer.parseInt(imgNum);
@@ -102,6 +102,83 @@ public class ImgCreator {   //附图控件创建类
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static JButton createSelectJButton(int x, int y, int recipeNum){ //创建附带背景图和图标的按钮(配方选择按钮)
+        if(recipeNum > -2){
+            try{
+                JButton jButton = new JButton();
+                ImageIcon icoImage;
+
+                try{
+                    ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.recipe);
+                }
+                catch (NullPointerException ignored){}
+                if(recipeNum > -1){
+                    icoImage = new ImageIcon(JarFileInput.loadJarImg("image/recipe/recipe_" + ConfigLoad.metalList[recipeNum][0] + ".png"));
+                    jButton.setToolTipText(ConfigLoad.langText[28] + ": " + ConfigLoad.metalList[recipeNum][1]);
+                    jButton.addActionListener(ListenerCreator.createSelectButtonListener());
+                }
+                else{
+                    if(AnvilView.runNum < ConfigLoad.internalNum){
+                        if(Integer.parseInt(ConfigLoad.recipeID[AnvilView.runNum][1]) == 0){
+                            icoImage = new ImageIcon(JarFileInput.loadJarImg("image/recipe/recipe_not.png"));
+                            jButton.setToolTipText(ConfigLoad.langText[27] + ConfigLoad.langText[28]);
+                        }
+                        else {
+                            icoImage = new ImageIcon(JarFileInput.loadJarImg("image/recipe/recipe_null.png"));
+                            jButton.setToolTipText(ConfigLoad.langText[9] + ConfigLoad.langText[28]);
+                            jButton.addActionListener(ListenerCreator.createSelectButtonListener());
+                        }
+                    }
+                    else {
+                        icoImage = new ImageIcon(JarFileInput.loadJarImg("image/recipe/recipe_not.png"));
+                        jButton.setToolTipText(ConfigLoad.langText[27] + ConfigLoad.langText[28]);
+                    }
+                }
+
+                jButton.setBounds(x, y, icoImage.getIconWidth(), icoImage.getIconHeight());
+                jButton.setContentAreaFilled(false);
+                jButton.setBorder(null);
+                jButton.setIcon(icoImage);
+                return jButton;
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static JButton createRecipeJButton(int x, int y, String recipeID){   //创建附带背景图和图标的按钮(配方按钮)
+        try{
+            BufferedImage icoImage;
+            BufferedImage bgImage = JarFileInput.loadJarBufferedImg("image/button.png");
+            icoImage = JarFileInput.loadJarBufferedImg("image/recipe/recipe_" + recipeID + ".png");
+            Graphics2D g2d = bgImage.createGraphics();
+            g2d.drawImage(icoImage, 2, 2, 32, 32, null);
+            g2d.dispose();
+            ImageIcon imageIcon = new ImageIcon(bgImage);
+            JButton jButton = new JButton();
+            jButton.setBounds(x, y, imageIcon.getIconWidth(), imageIcon.getIconHeight());
+            jButton.setContentAreaFilled(false);
+            jButton.setBorder(null);
+            jButton.setIcon(imageIcon);
+            jButton.addActionListener(ListenerCreator.createRecipeButtonListener());
+            return jButton;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static JLabel createFreeImgJLabel(int x, int y, String imgSrc){   //创建图片标签(自由)
+        JLabel jLabel = new JLabel();
+        ImageIcon imageIcon = new ImageIcon(JarFileInput.loadJarImg(imgSrc));
+        jLabel.setIcon(imageIcon);
+        jLabel.setBounds(x, y, imageIcon.getIconWidth(), imageIcon.getIconHeight());
+        return jLabel;
     }
 
     public static JLabel createImgJLabel(int x, int y, String imgSrc){   //创建图片标签(内部)

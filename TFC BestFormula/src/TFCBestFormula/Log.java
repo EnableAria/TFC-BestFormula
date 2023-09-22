@@ -36,7 +36,16 @@ public class Log {  //日志输出类
             calculator.setValue(target, required);
             output = calculator.calculation();
             if(output[0] != 0){
-                log.append(ConfigLoad.forgingText[AnvilView.runNum][1] + "[" + target + "] " + ConfigLoad.langText[14] + ":\n");
+                if(AnvilView.recipeNum >= 0){
+                    log.append(ConfigLoad.metalList[AnvilView.recipeNum][1]);
+                }
+                if(AnvilView.runNum == 3 && AnvilView.recipeNum >= 0){
+                    log.append(ConfigLoad.needMetalText[1][1]);
+                }
+                else {
+                    log.append(ConfigLoad.forgingText[AnvilView.runNum][1]);
+                }
+                log.append("[" + target + "] " + ConfigLoad.langText[14] + ":\n");
                 for(int i : output){
                     if(i != -1){
                         log.append((i + 1) + " ");

@@ -18,8 +18,7 @@ public class MainUI extends JFrame {
 
     public void init(){
         ConfigLoad.load();
-        ChooseButtonListener.setMainUI(this);
-        ItemButtonListener.setMainUI(this);
+        ListenerCreator.setMainUI(this);
         setIconImage(JarFileInput.loadJarImg("image/ico.png"));
         setTitle("TFC Best Formula");
         borderLayout = new BorderLayout();

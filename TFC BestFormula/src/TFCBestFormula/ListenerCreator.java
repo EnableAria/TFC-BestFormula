@@ -3,6 +3,7 @@ package TFCBestFormula;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +11,16 @@ import java.awt.event.KeyListener;
 import java.util.Arrays;
 
 public class ListenerCreator {   //自定义监听类
+    public static MainUI mainUI;
+    public static AnvilView anvilView;
+
+    public static void setMainUI(MainUI mainUI){
+        ListenerCreator.mainUI = mainUI;
+    }
+    public static void setAnvilView(AnvilView anvilView){
+        ListenerCreator.anvilView = anvilView;
+    }
+
     public static TargetSliderListener createTargetSliderListener(JTextField target){   //目标滑块监听器创建方法
         TargetSliderListener targetSliderListener = new TargetSliderListener();
         targetSliderListener.setTarget(target);
@@ -23,6 +34,12 @@ public class ListenerCreator {   //自定义监听类
         return targetListener;
     }
 
+    public static SeedListener createSeedListener(JTextField seed){  //种子输入框监听器创建方法
+        SeedListener seedListener = new SeedListener();
+        seedListener.setJTextField(seed);
+        return seedListener;
+    }
+
     public static StepButtonListener createStepButtonListener(int i, ImgJSlider forgingSlider){ //步骤按钮监听器创建方法
         StepButtonListener stepButtonListener = new StepButtonListener();
         stepButtonListener.setButtonValue(Calculation.value[i]);
@@ -30,12 +47,24 @@ public class ListenerCreator {   //自定义监听类
         return stepButtonListener;
     }
 
-    public static ChooseButtonListener createChooseButtonListener(){    //选择按钮监听器创建方法
+    public static ChooseButtonListener createChooseButtonListener(){    //工具选择按钮监听器创建方法
         return new ChooseButtonListener();
     }
 
     public static ItemButtonListener createItemButtonListener(){    //工具按钮监听器创建方法
         return new ItemButtonListener();
+    }
+
+    public static SelectButtonListener createSelectButtonListener(){    //配方选择按钮监听器创建方法
+        return new SelectButtonListener();
+    }
+
+    public static RecipeButtonListener createRecipeButtonListener(){    //配方按钮监听器创建方法
+        return new RecipeButtonListener();
+    }
+
+    public static BackButtonListener createBackButtonListener(){    //背景返回按钮监听器创建方法
+        return new BackButtonListener();
     }
 
     public static StartButtonListener createStartButtonListener(ImgJSlider targetSlider, JTextArea log){    //开始按钮监听器创建方法
@@ -106,6 +135,65 @@ class TargetListener implements KeyListener {    //目标输入框监听类
     }
 }
 
+class SeedListener implements KeyListener { //种子输入框监听类
+    JTextField seed;
+    public void keyPressed(KeyEvent e){
+        int key = e.getKeyCode();
+        String textNum = "";
+        StringBuilder outText = new StringBuilder();
+        String text = seed.getText();
+        try{
+            if(key != 8 && key != 37 && key != 39){
+                if(!text.isEmpty()){
+                    String[] num = text.split("[^-0123456789]+");
+                    if(num[0].isEmpty()){
+                        num = Arrays.copyOfRange(num, 1, num.length);
+                    }
+                    for(String s:num){
+                        outText.append(s);
+                    }
+                    if(outText.length() > 20){
+                        textNum = outText.substring(0, 20);
+                    }
+                    else {
+                        textNum = new String(outText);
+                    }
+                    if(textNum.matches("-?\\d{19}")){
+                        ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.recipe);
+                        if(AnvilView.recipeNum < -1){
+                            AnvilView.recipeNum = -1;
+                        }
+                    }
+                    else {
+                        ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.recipe);
+                        AnvilView.recipeNum = -2;
+                    }
+                }
+                else {
+                    ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.recipe);
+                    AnvilView.recipeNum = -2;
+                }
+                ListenerCreator.mainUI.validate();
+                ListenerCreator.mainUI.repaint();
+                seed.setText(textNum);
+            }
+        }
+        catch(ArrayIndexOutOfBoundsException ignored){}
+    }
+
+    public void keyReleased(KeyEvent e){
+        keyPressed(e);
+    }
+
+    public void keyTyped(KeyEvent e){
+        keyPressed(e);
+    }
+
+    public void setJTextField(JTextField seed){
+        this.seed = seed;
+    }
+}
+
 class StepButtonListener implements ActionListener { //步骤按钮监听类
     int buttonValue;
     ImgJSlider forgingSlider;
@@ -129,36 +217,28 @@ class StepButtonListener implements ActionListener { //步骤按钮监听类
     }
 }
 
-class ChooseButtonListener implements ActionListener {   //选择按钮监听类
-    public static MainUI mainUI;
-    public static void setMainUI(MainUI mainUI){
-        ChooseButtonListener.mainUI = mainUI;
-    }
+class ChooseButtonListener implements ActionListener {   //工具选择按钮监听类
     public void actionPerformed(ActionEvent e){
-        mainUI.remove(mainUI.anvilView);
-        mainUI.add(mainUI.chooseView);
-        mainUI.validate();
-        mainUI.repaint();
+        ListenerCreator.mainUI.remove(ListenerCreator.mainUI.anvilView);
+        ListenerCreator.mainUI.add(ListenerCreator.mainUI.chooseView);
+        ListenerCreator.mainUI.validate();
+        ListenerCreator.mainUI.repaint();
     }
 }
 
 class ItemButtonListener implements ActionListener { //工具按钮监听类
-    public static MainUI mainUI;
     public static String[] order = Arrays.copyOfRange(ConfigLoad.langText, 22, 27);
-    public static void setMainUI(MainUI mainUI){
-        ItemButtonListener.mainUI = mainUI;
-    }
     public void actionPerformed(ActionEvent e){
         JButton itemButton = (JButton)e.getSource();
         int num = Integer.parseInt(itemButton.getName());
         AnvilView.runNum = num;
-        mainUI.anvilView.mainPanel.remove(mainUI.anvilView.choose);
-        mainUI.anvilView.choose = ImgCreator.createChooseJButton(42, 82, num + "");
-        mainUI.anvilView.mainPanel.add(mainUI.anvilView.choose);
-        mainUI.anvilView.mainPanel.remove(mainUI.anvilView.needMetal);
+        ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.choose);
+        ListenerCreator.anvilView.choose = ImgCreator.createChooseJButton(42, 82, num + "");
+        ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.choose);
+        ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.needMetal);
         if(num < ConfigLoad.internalNum){
-            mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][0] + ".png");
-            mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][1]);
+            ListenerCreator.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][0] + ".png");
+            ListenerCreator.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[Integer.parseInt(ConfigLoad.forgingText[num][8])][1]);
         }
         else {
             int i, j = 1;
@@ -169,8 +249,8 @@ class ItemButtonListener implements ActionListener { //工具按钮监听类
                 }
             }
             if(j == 0){
-                mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.forgingText[num][8] + ".png");
-                mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[i][1]);
+                ListenerCreator.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, "image/need_metal/" + ConfigLoad.forgingText[num][8] + ".png");
+                ListenerCreator.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[i][1]);
             }
             else{
                 for(i = 0; i < ConfigLoad.externalMetalNum; i++){
@@ -178,27 +258,87 @@ class ItemButtonListener implements ActionListener { //工具按钮监听类
                         break;
                     }
                 }
-                mainUI.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, num);
-                mainUI.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[ConfigLoad.internalMetalNum + i][1]);
+                ListenerCreator.anvilView.needMetal = ImgCreator.createImgJLabel(62, 136, num);
+                ListenerCreator.anvilView.needMetal.setToolTipText(ConfigLoad.langText[11] + ConfigLoad.needMetalText[ConfigLoad.internalMetalNum + i][1]);
             }
         }
-        mainUI.anvilView.mainPanel.add(mainUI.anvilView.needMetal);
+        ListenerCreator.mainUI.anvilView.mainPanel.add(ListenerCreator.anvilView.needMetal);
         for(int i = 0; i < 3; i++){
-            mainUI.anvilView.mainPanel.remove(mainUI.anvilView.showLabel[i]);
-            mainUI.anvilView.showLabel[i] = ImgCreator.createImgShowJLabel(194 - (38 * i), 14, Integer.parseInt(ConfigLoad.forgingText[num][i + 5]), Integer.parseInt(ConfigLoad.forgingText[num][i + 2]));
+            ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.showLabel[i]);
+            ListenerCreator.anvilView.showLabel[i] = ImgCreator.createImgShowJLabel(194 - (38 * i), 14, Integer.parseInt(ConfigLoad.forgingText[num][i + 5]), Integer.parseInt(ConfigLoad.forgingText[num][i + 2]));
             if(!ConfigLoad.forgingText[num][i + 2].equals("0")){
-                mainUI.anvilView.showLabel[i].setToolTipText(AnvilView.forgingName[Integer.parseInt(ConfigLoad.forgingText[num][i + 2]) - 1] + " " + order[Integer.parseInt(ConfigLoad.forgingText[num][i + 5]) - 1]);
+                ListenerCreator.anvilView.showLabel[i].setToolTipText(AnvilView.forgingName[Integer.parseInt(ConfigLoad.forgingText[num][i + 2]) - 1] + " " + order[Integer.parseInt(ConfigLoad.forgingText[num][i + 5]) - 1]);
             }
-            mainUI.anvilView.mainPanel.add(mainUI.anvilView.showLabel[i]);
+            ListenerCreator.anvilView.mainPanel.add(ListenerCreator.mainUI.anvilView.showLabel[i]);
         }
-        mainUI.anvilView.mainPanel.remove(mainUI.anvilView.hammer);
-        mainUI.anvilView.hammer = ImgCreator.createImgJLabel(258, 136, "image/hammer.png");
-        mainUI.anvilView.hammer.setToolTipText(ConfigLoad.langText[12]);
-        mainUI.anvilView.mainPanel.add(mainUI.anvilView.hammer);
-        mainUI.remove(mainUI.chooseView);
-        mainUI.add(mainUI.anvilView);
-        mainUI.validate();
-        mainUI.repaint();
+        if(AnvilView.recipeNum > -2){
+            int recipeListNum = Integer.parseInt(ConfigLoad.recipeID[num][1]);
+            try{
+                ListenerCreator.anvilView.seed.setEditable(false);
+                ListenerCreator.anvilView.seed.setForeground(Color.lightGray);
+                ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.select);
+            }
+            catch (NullPointerException ignored){}
+
+            if(recipeListNum <= 0){
+                AnvilView.recipeNum = -1;
+            }
+            else {
+                if(!(AnvilView.recipeNum >= ImgSelect.selectNum[recipeListNum - 1][1] && AnvilView.recipeNum < (ImgSelect.selectNum[recipeListNum - 1][0] + ImgSelect.selectNum[recipeListNum - 1][1]))){
+                    AnvilView.recipeNum = -1;
+                }
+            }
+            ListenerCreator.anvilView.select = ImgCreator.createSelectJButton(26, 136, AnvilView.recipeNum);
+            ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.select);
+        }
+        int target = 0;
+        if(AnvilView.recipeNum >= -1){
+            target = SeedCalculator.getTarget();
+        }
+        ListenerCreator.anvilView.target.setText(target + "");
+        ListenerCreator.anvilView.targetSlider.setValue(target);
+        ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.hammer);
+        ListenerCreator.anvilView.hammer = ImgCreator.createImgJLabel(258, 136, "image/hammer.png");
+        ListenerCreator.anvilView.hammer.setToolTipText(ConfigLoad.langText[12]);
+        ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.hammer);
+        ListenerCreator.mainUI.remove(ListenerCreator.mainUI.chooseView);
+        ListenerCreator.mainUI.add(ListenerCreator.mainUI.anvilView);
+        ListenerCreator.mainUI.validate();
+        ListenerCreator.mainUI.repaint();
+    }
+}
+
+class SelectButtonListener implements ActionListener {  //配方选择按钮监听类
+    public void actionPerformed(ActionEvent e){
+        ListenerCreator.anvilView.selectWindow = ImgSelect.selectWindow[Integer.parseInt(ConfigLoad.recipeID[AnvilView.runNum][1]) - 1];
+        ListenerCreator.anvilView.pane.add(ListenerCreator.anvilView.selectWindow, 0);
+        ListenerCreator.anvilView.validate();
+        ListenerCreator.anvilView.repaint();
+    }
+}
+
+class RecipeButtonListener implements ActionListener {  //配方按钮监听类
+    public void actionPerformed(ActionEvent e){
+        JButton recipeButton = (JButton)e.getSource();
+        int recipeNum = Integer.parseInt(recipeButton.getName());
+        AnvilView.recipeNum = recipeNum;
+        int target = SeedCalculator.getTarget();
+        ListenerCreator.anvilView.target.setText(target + "");
+        ListenerCreator.anvilView.targetSlider.setValue(target);
+        ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.mainUI.anvilView.select);
+        ListenerCreator.anvilView.select = ImgCreator.createSelectJButton(26, 136, recipeNum);
+        ListenerCreator.anvilView.mainPanel.add(ListenerCreator.mainUI.anvilView.select);
+        ListenerCreator.anvilView.pane.remove(ListenerCreator.anvilView.selectWindow);
+        ListenerCreator.anvilView.validate();
+        ListenerCreator.anvilView.repaint();
+    }
+}
+
+class BackButtonListener implements ActionListener {    //背景返回按钮监听类
+    public void actionPerformed(ActionEvent e){
+        ListenerCreator.anvilView.pane.remove(ListenerCreator.anvilView.selectWindow);
+        ListenerCreator.anvilView.validate();
+        ListenerCreator.anvilView.repaint();
     }
 }
 

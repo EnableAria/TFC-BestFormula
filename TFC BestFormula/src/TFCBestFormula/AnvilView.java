@@ -8,13 +8,14 @@ import java.util.Arrays;
 public class AnvilView extends JPanel {
     public static String[] forgingName = Arrays.copyOfRange(ConfigLoad.langText, 0, 8);
     public static int runNum = -1;
+    public static int recipeNum = -2;
     int width = 368, height = 453;
-    JLayeredPane pane;
+    JLayeredPane pane, selectWindow;
     JPanel bgPanel, mainPanel;
-    JLabel title, needMetal, hammer, flux;
-    JTextField target;
+    JLabel title, needMetal, hammer, flux, recipe;
+    JTextField target, seed;
     JTextArea log;
-    JButton choose, start;
+    JButton choose, select, start;
     JButton[] forgingButton;
     JLabel[] showLabel, logLabel;
     ImgJSlider targetSlider, forgingSlider;
@@ -26,7 +27,9 @@ public class AnvilView extends JPanel {
     }
 
     public void init(){
+        ImgSelect.allLoad();
         Log.setAnvilView(this);
+        ListenerCreator.setAnvilView(this);
         pane = new JLayeredPane();
         pane.setBounds(0, 0, width, height);
         bgPanel = ImgCreator.createBgImgJPanel(0, 0, "image/background_anvil.png");
@@ -36,6 +39,7 @@ public class AnvilView extends JPanel {
         needMetal = ImgCreator.createImgJLabel(62, 136, "image/not_need_metal.png");
         hammer = ImgCreator.createImgJLabel(258, 136, "image/not_hammer.png");
         flux = ImgCreator.createImgJLabel(294, 136, "image/not_flux.png");
+        recipe = ImgCreator.createImgJLabel(26, 136, "image/not_recipe.png");
         mainPanel.add(needMetal);
         mainPanel.add(hammer);
         mainPanel.add(flux);
@@ -62,6 +66,15 @@ public class AnvilView extends JPanel {
         target.addKeyListener(ListenerCreator.createTargetListener(target, targetSlider));
         target.setOpaque(false);
         mainPanel.add(target);
+        seed = new JTextField("");
+        seed.setFont(new Font(null,Font.PLAIN,12));
+        seed.setHorizontalAlignment(SwingConstants.RIGHT);
+        seed.setForeground(Color.white);
+        seed.setBorder(null);
+        seed.setBounds(176, 227, 160, 15);
+        seed.addKeyListener(ListenerCreator.createSeedListener(seed));
+        seed.setOpaque(false);
+        mainPanel.add(seed);
         log = new JTextArea();
         log.setFont(new Font(null,Font.PLAIN,14));
         log.setForeground(Color.white);
