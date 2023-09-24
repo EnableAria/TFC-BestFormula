@@ -158,7 +158,7 @@ class SeedListener implements KeyListener { //种子输入框监听类
                     else {
                         textNum = new String(outText);
                     }
-                    if(textNum.matches("-?\\d{19}")){
+                    if(textNum.matches("-?\\d{1,19}")){
                         ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.recipe);
                         if(AnvilView.recipeNum < -1){
                             AnvilView.recipeNum = -1;
