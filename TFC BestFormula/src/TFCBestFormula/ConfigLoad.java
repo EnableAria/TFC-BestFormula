@@ -23,7 +23,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void getPath(){   //获取项目所在路径
         path = ConfigLoad.class.getProtectionDomain().getCodeSource().getLocation().getFile();  //获取jar状态下路径
-        //path = System.getProperty("exe.path");    //获取exe状态下路径
+//        path = System.getProperty("exe.path");    //获取exe状态下路径
         try {
             path = java.net.URLDecoder.decode(path, "UTF-8");
         }

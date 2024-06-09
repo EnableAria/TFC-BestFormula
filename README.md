@@ -14,15 +14,15 @@ TFC群峦传说的锻造公式图形化计算器，利用java8编写，内置了
 
 ### 资源包方式
 
-可以通过在游戏内载入 [TFC-Forging-Assistance.zip](https://github.com/EnableAria/TFC-BestFormula/releases/tag/resourcepacks) 资源包，以准确获取目标值。该资源包支持的游戏版本为 1.7、1.12和1.18。
+可以通过在游戏内载入 [TFC-Forging-Assistance.zip](https://github.com/EnableAria/TFC-BestFormula/releases/tag/resourcepacks) 资源包，以准确获取目标值。该资源包支持的游戏版本为 1.7、1.12、1.18和1.20。
 
 游戏(1.18)内资源包效果如下所示:
 
 ![](/img/game.png "资源包界面")
 
-### 世界种子方式(仅限1.18)
+### 世界种子方式(仅限1.18和1.20)
 
-可以通过在程序内输入世界种子来快速获取目标值。该方式仅支持1.18。
+可以通过在程序内输入世界种子来快速获取目标值。该方式仅支持1.18和1.20。
 
 工具内运行效果如下所示:
 
