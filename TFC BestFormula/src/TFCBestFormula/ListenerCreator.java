@@ -4,10 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.Arrays;
 
 public class ListenerCreator {   //自定义监听类
@@ -67,11 +64,16 @@ public class ListenerCreator {   //自定义监听类
         return new BackButtonListener();
     }
 
-    public static StartButtonListener createStartButtonListener(ImgJSlider targetSlider, JTextArea log){    //开始按钮监听器创建方法
+    public static StartButtonListener createStartButtonListener(ImgJSlider targetSlider, ImgJSlider forgingSlider, JTextArea log){    //开始按钮监听器创建方法
         StartButtonListener startButtonListener = new StartButtonListener();
-        startButtonListener.setImgJSlider(targetSlider);
+        startButtonListener.setTargetSlider(targetSlider);
+        startButtonListener.setForgingSlider(forgingSlider);
         startButtonListener.setLog(log);
         return startButtonListener;
+    }
+
+    public static ExitListener createExitListener(){    //关闭程序监听器创建方法
+        return new ExitListener();
     }
 }
 
@@ -98,22 +100,36 @@ class TargetListener implements KeyListener {    //目标输入框监听类
         String text = target.getText();
         if(key != 8 && key != 37 && key != 39){
             if(!text.isEmpty()){
-                String[] num = text.split("\\D+");
-                if(num[0].isEmpty()){
-                    num = Arrays.copyOfRange(num, 1, num.length);
+                try{
+                    textNum = Integer.parseInt(text);
+                    if(!text.equals(textNum + "")){
+                        target.setText(textNum + "");
+                    }
                 }
-                for(String s:num){
-                    outText.append(s);
+                catch(RuntimeException e1){
+                    String[] num = text.split("\\D+");
+                    if(num[0].isEmpty()){
+                        num = Arrays.copyOfRange(num, 1, num.length);
+                    }
+                    for(String s:num){
+                        outText.append(s);
+                    }
+                    textNum = Integer.parseInt(outText.toString());
+                    target.setText(textNum + "");
                 }
-                textNum = Integer.parseInt(outText.toString());
-                if(textNum < 0){
-                    textNum = 0;
-                }
-                else if(textNum > 145){
-                    textNum = 145;
+                if(textNum < 0 || textNum > 145){
+                    if(textNum < 0){
+                        textNum = 0;
+                    }
+                    else{
+                        textNum = 145;
+                    }
+                    target.setText(textNum + "");
                 }
             }
-            target.setText(textNum + "");
+            else{
+                target.setText(textNum + "");
+            }
             targetSlider.setValue(textNum);
         }
     }
@@ -139,26 +155,15 @@ class SeedListener implements KeyListener { //种子输入框监听类
     JTextField seed;
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
-        String textNum = "";
-        StringBuilder outText = new StringBuilder();
         String text = seed.getText();
         try{
             if(key != 8 && key != 37 && key != 39){
                 if(!text.isEmpty()){
-                    String[] num = text.split("[^-0123456789]+");
-                    if(num[0].isEmpty()){
-                        num = Arrays.copyOfRange(num, 1, num.length);
+                    if(text.length() > 20){
+                        text = text.substring(0, 20);
+                        seed.setText(text);
                     }
-                    for(String s:num){
-                        outText.append(s);
-                    }
-                    if(outText.length() > 20){
-                        textNum = outText.substring(0, 20);
-                    }
-                    else {
-                        textNum = new String(outText);
-                    }
-                    if(textNum.matches("-?\\d{1,19}")){
+                    if(text.matches("-?\\d{1,19}")){
                         ListenerCreator.anvilView.mainPanel.add(ListenerCreator.anvilView.recipe);
                         if(AnvilView.recipeNum < -1){
                             AnvilView.recipeNum = -1;
@@ -175,7 +180,6 @@ class SeedListener implements KeyListener { //种子输入框监听类
                 }
                 ListenerCreator.mainUI.validate();
                 ListenerCreator.mainUI.repaint();
-                seed.setText(textNum);
             }
         }
         catch(ArrayIndexOutOfBoundsException ignored){}
@@ -278,12 +282,12 @@ class ItemButtonListener implements ActionListener { //工具按钮监听类
                 ListenerCreator.anvilView.seed.setForeground(Color.lightGray);
                 ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.select);
             }
-            catch (NullPointerException ignored){}
+            catch(NullPointerException ignored){}
 
             if(recipeListNum <= 0){
                 AnvilView.recipeNum = -1;
             }
-            else {
+            else{
                 if(!(AnvilView.recipeNum >= ImgSelect.selectNum[recipeListNum - 1][1] && AnvilView.recipeNum < (ImgSelect.selectNum[recipeListNum - 1][0] + ImgSelect.selectNum[recipeListNum - 1][1]))){
                     AnvilView.recipeNum = -1;
                 }
@@ -297,6 +301,8 @@ class ItemButtonListener implements ActionListener { //工具按钮监听类
         }
         ListenerCreator.anvilView.target.setText(target + "");
         ListenerCreator.anvilView.targetSlider.setValue(target);
+        ListenerCreator.anvilView.initial.setText("0");
+        ListenerCreator.anvilView.forgingSlider.setValue(0);
         ListenerCreator.anvilView.mainPanel.remove(ListenerCreator.anvilView.hammer);
         ListenerCreator.anvilView.hammer = ImgCreator.createImgJLabel(258, 136, "image/hammer.png");
         ListenerCreator.anvilView.hammer.setToolTipText(ConfigLoad.langText[12]);
@@ -343,17 +349,28 @@ class BackButtonListener implements ActionListener {    //背景返回按钮监�
 }
 
 class StartButtonListener implements ActionListener {   //开始按钮监听类
-    ImgJSlider targetSlider;
+    ImgJSlider targetSlider, forgingSlider;
     JTextArea log;
     public void actionPerformed(ActionEvent e){
-        Log.outputLog(targetSlider.getValue(), log);
+        Log.outputLog(targetSlider.getValue(), forgingSlider.getValue(), log);
     }
 
-    public void setImgJSlider(ImgJSlider targetSlider){
+    public void setTargetSlider(ImgJSlider targetSlider){
         this.targetSlider = targetSlider;
+    }
+
+    public void setForgingSlider(ImgJSlider forgingSlider){
+        this.forgingSlider = forgingSlider;
     }
 
     public void setLog(JTextArea log){
         this.log = log;
+    }
+}
+
+class ExitListener extends WindowAdapter{   //关闭程序监听类
+    public void windowClosing(WindowEvent e) {
+        super.windowClosing(e);
+        SaveSettings.saveSettings(ListenerCreator.anvilView.seed.getText());
     }
 }

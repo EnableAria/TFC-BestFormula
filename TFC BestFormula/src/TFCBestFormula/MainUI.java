@@ -14,6 +14,7 @@ public class MainUI extends JFrame {
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addWindowListener(ListenerCreator.createExitListener());
     }
 
     public void init(){

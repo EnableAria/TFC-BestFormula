@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Log {  //日志输出类
     public static AnvilView anvilView;
     static int[] output;
-    public static void outputLog(int target, JTextArea log){    //日志输出方法
+    public static void outputLog(int target, int initial, JTextArea log){    //日志输出方法
         if(AnvilView.runNum >= 0){
             log.setText(ConfigLoad.langText[13] + "\n");
             Calculator calculator = new Calculator();
@@ -33,7 +33,7 @@ public class Log {  //日志输出类
                     required[i] = Integer.parseInt(requiredS[i]) - 1;
                 }
             }
-            calculator.setValue(target, required);
+            calculator.setValue(target, initial, required);
             output = calculator.calculation();
             if(output[0] != 0){
                 if(AnvilView.recipeNum >= 0){
@@ -45,7 +45,12 @@ public class Log {  //日志输出类
                 else {
                     log.append(ConfigLoad.forgingText[AnvilView.runNum][1]);
                 }
-                log.append("[" + target + "] " + ConfigLoad.langText[14] + ":\n");
+                if(initial == 0){
+                    log.append("[" + target + "] " + ConfigLoad.langText[14] + ":\n");
+                }
+                else{
+                    log.append("[" + initial + "→" + target + "] " + ConfigLoad.langText[14] + ":\n");
+                }
                 for(int i : output){
                     if(i != -1){
                         log.append((i + 1) + " ");

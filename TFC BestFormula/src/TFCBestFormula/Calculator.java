@@ -5,14 +5,14 @@ public class Calculator {   //计算器类
     int[] required;
     int[] output;
 
-    public void setValue(int target, int[] required){
-        this.target = target;
+    public void setValue(int target, int initial, int[] required){
+        this.target = target - initial;
         this.required = required;
     }
 
     public int[] calculation(){
         int i;
-        for(i = 1; i <= 12; i++){   //每次往上增加最大计算位数
+        for(i = 0; i <= 12; i++){   //每次往上增加最大计算位数
             output = Calculation.run(i, target, required);
             if(output[0] != 0){
                 break;

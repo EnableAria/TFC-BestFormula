@@ -13,7 +13,7 @@ public class AnvilView extends JPanel {
     JLayeredPane pane, selectWindow;
     JPanel bgPanel, mainPanel;
     JLabel title, needMetal, hammer, flux, recipe;
-    JTextField target, seed;
+    JTextField initial, target, seed;
     JTextArea log;
     JButton choose, select, start;
     JButton[] forgingButton;
@@ -48,16 +48,25 @@ public class AnvilView extends JPanel {
         title.setBounds(13, 6, 20, 20);
         mainPanel.add(title);
 
+        initial = new JTextField("0");
+        forgingSlider = new ImgJSlider(0, 145, 0, "image/pointer_green.png");
+        forgingSlider.setBounds(23, 200, 305, 16);
+        forgingSlider.addChangeListener(ListenerCreator.createTargetSliderListener(initial));
+        mainPanel.add(forgingSlider);
         target = new JTextField("0");
         targetSlider = new ImgJSlider(0, 145, 0, "image/pointer_red.png");
         targetSlider.setBounds(23, 188, 305, 16);
         targetSlider.addChangeListener(ListenerCreator.createTargetSliderListener(target));
         mainPanel.add(targetSlider);
-        forgingSlider = new ImgJSlider(0, 145, 0, "image/pointer_green.png");
-        forgingSlider.setBounds(23, 200, 305, 16);
-        forgingSlider.setEnabled(false);
-        mainPanel.add(forgingSlider);
 
+        initial.setFont(new Font(null,Font.PLAIN,12));
+        initial.setHorizontalAlignment(SwingConstants.RIGHT);
+        initial.setForeground(Color.white);
+        initial.setBorder(null);
+        initial.setBounds(300, 209, 26, 15);
+        initial.addKeyListener(ListenerCreator.createTargetListener(initial, forgingSlider));
+        initial.setOpaque(false);
+        mainPanel.add(initial);
         target.setFont(new Font(null,Font.PLAIN,12));
         target.setHorizontalAlignment(SwingConstants.RIGHT);
         target.setForeground(Color.white);
@@ -66,12 +75,12 @@ public class AnvilView extends JPanel {
         target.addKeyListener(ListenerCreator.createTargetListener(target, targetSlider));
         target.setOpaque(false);
         mainPanel.add(target);
-        seed = new JTextField("");
+        seed = new JTextField(ConfigLoad.initial_seed);
         seed.setFont(new Font(null,Font.PLAIN,12));
         seed.setHorizontalAlignment(SwingConstants.RIGHT);
         seed.setForeground(Color.white);
         seed.setBorder(null);
-        seed.setBounds(176, 227, 160, 15);
+        seed.setBounds(196, 227, 140, 15);
         seed.addKeyListener(ListenerCreator.createSeedListener(seed));
         seed.setOpaque(false);
         mainPanel.add(seed);
@@ -103,7 +112,7 @@ public class AnvilView extends JPanel {
         }
 
         start = ImgCreator.createBgImgJButton(274, 17, "image/start.png");
-        start.addActionListener(ListenerCreator.createStartButtonListener(targetSlider, log));
+        start.addActionListener(ListenerCreator.createStartButtonListener(targetSlider, forgingSlider, log));
         mainPanel.add(start);
         choose = ImgCreator.createChooseJButton(42, 82, "");
         mainPanel.add(choose);
@@ -117,6 +126,11 @@ public class AnvilView extends JPanel {
         for(int i = 0; i < 15; i++){
             logLabel[i] = new JLabel();
             mainPanel.add(logLabel[i]);
+        }
+
+        if(!ConfigLoad.initial_seed.equals("")){
+            recipeNum = -1;
+            mainPanel.add(ListenerCreator.anvilView.recipe);
         }
 
         pane.add(bgPanel, 10);

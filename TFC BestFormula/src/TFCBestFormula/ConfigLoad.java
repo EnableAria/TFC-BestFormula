@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class ConfigLoad {    //配置加载类
     public static int itemNum = 0, internalNum = 0, externalNum = 0, internalMetalNum = 0, externalMetalNum = 0;
-    public static String path, logText_1, logText_2;
+    public static String path, initial_seed, logText_1, logText_2;
     public static String[] langText;
     public static String[][] recipeID;
     public static String[][] metalList;
@@ -14,6 +14,7 @@ public class ConfigLoad {    //配置加载类
     public static String[][] needMetalText = new String[90][2];
     public static void load(){
         getPath();
+        loadSettings();
         loadLangText();
         loadMetalListText();
         loadForgingText();
@@ -24,7 +25,7 @@ public class ConfigLoad {    //配置加载类
     public static void getPath(){   //获取项目所在路径
         path = ConfigLoad.class.getProtectionDomain().getCodeSource().getLocation().getFile();  //获取jar状态下路径
 //        path = System.getProperty("exe.path");    //获取exe状态下路径
-        try {
+        try{
             path = java.net.URLDecoder.decode(path, "UTF-8");
         }
         catch (Exception e){
@@ -35,10 +36,25 @@ public class ConfigLoad {    //配置加载类
         path = path.substring(firstIndex, lastIndex);
     }
 
+    public static void loadSettings(){  //加载用户配置
+        initial_seed = "";
+        try{
+            FileInputStream fileInputStream = new FileInputStream(path + "settings.ini");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            Scanner reader = new Scanner(inputStreamReader);
+            String buffer;
+            buffer = reader.next();
+            initial_seed = buffer.split("seed=")[1];
+            fileInputStream.close();
+            inputStreamReader.close();
+        }
+        catch(ArrayIndexOutOfBoundsException | IOException ignored){}
+    }
+
     public static void loadLangText(){  //加载文本文件
         int i;
         langText = new String[30];
-        try {
+        try{
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/lang.ini");
             assert inputStream != null;
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -46,6 +62,8 @@ public class ConfigLoad {    //配置加载类
             for(i = 0; reader.hasNext(); i++){
                 langText[i] = reader.next();
             }
+            inputStream.close();
+            inputStreamReader.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -55,7 +73,7 @@ public class ConfigLoad {    //配置加载类
     public static void loadRecipeIDText(){  //加载配方数据文件
         int i;
         recipeID = new String[itemNum][2];
-        try {
+        try{
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/recipe_id.ini");
             assert inputStream != null;
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -69,6 +87,8 @@ public class ConfigLoad {    //配置加载类
                 recipeID[i][1] = "0";
                 i++;
             }
+            inputStream.close();
+            inputStreamReader.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -78,7 +98,7 @@ public class ConfigLoad {    //配置加载类
     public static void loadMetalListText(){ //加载金属列表文件
         int i;
         metalList = new String[19][2];
-        try {
+        try{
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/metal_list.ini");
             assert inputStream != null;
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -87,6 +107,8 @@ public class ConfigLoad {    //配置加载类
                 metalList[i][0] = reader.next();
                 metalList[i][1] = reader.next();
             }
+            inputStream.close();
+            inputStreamReader.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -101,7 +123,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void loadInternalForgingText(){   //加载内部锻造项目
         int i, j;
-        try {
+        try{
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/forging.ini");
             assert inputStream != null;
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -112,6 +134,8 @@ public class ConfigLoad {    //配置加载类
                 }
                 internalNum++;
             }
+            inputStream.close();
+            inputStreamReader.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -120,7 +144,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void loadExternalForgingText(){   //加载外部锻造项目
         int i, j;
-        try {
+        try{
             FileInputStream fileInputStream = new FileInputStream(path + "config/forging.txt");
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
             Scanner reader = new Scanner(inputStreamReader);
@@ -131,9 +155,14 @@ public class ConfigLoad {    //配置加载类
                 externalNum++;
             }
             logText_1 = langText[17] + externalNum + langText[18] + langText[20];
+            fileInputStream.close();
+            inputStreamReader.close();
         }
         catch(FileNotFoundException e){
             logText_1 = langText[19] + langText[20];
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -144,7 +173,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void loadInternalNeedMetalText(){ //加载内部基底金属
         int i;
-        try {
+        try{
             InputStream inputStream = ConfigLoad.class.getResourceAsStream("config/need_metal.ini");
             assert inputStream != null;
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -154,6 +183,8 @@ public class ConfigLoad {    //配置加载类
                 needMetalText[i][1] = reader.next();
                 internalMetalNum++;
             }
+            inputStream.close();
+            inputStreamReader.close();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -162,7 +193,7 @@ public class ConfigLoad {    //配置加载类
 
     public static void loadExternalNeedMetalText(){ //加载外部基底金属
         int i;
-        try {
+        try{
             FileInputStream fileInputStream = new FileInputStream(path + "config/need_metal.txt");
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
             Scanner reader = new Scanner(inputStreamReader);
@@ -172,9 +203,14 @@ public class ConfigLoad {    //配置加载类
                 externalMetalNum++;
             }
             logText_2 = langText[17] + externalMetalNum + langText[18] + langText[21];
+            fileInputStream.close();
+            inputStreamReader.close();
         }
         catch(FileNotFoundException e){
             logText_2 = langText[19] + langText[21];
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
     }
 }
