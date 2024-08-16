@@ -105,6 +105,16 @@ refined_bloom 精铁方坯 2 2 2 1 2 3 test
 >wrought_iron_double_sheet 锻铁双层薄板
 >
 >red_or_blue_steel_sheet 红/蓝钢薄板
+>
+>steel_sheet 钢薄板
+>
+>brass_ingot 黄铜锭
+>
+>brass_rod 黄铜棒
+>
+>tin_ingot 锡锭
+>
+>pig_iron 生铁锭
 
 ### 添加基底金属数据文件
 
