@@ -16,7 +16,7 @@ TFC群峦传说的锻造公式图形化计算器，利用java8编写，内置了
 
 可以通过在游戏内载入 [TFC-Forging-Assistance.zip](https://github.com/EnableAria/TFC-BestFormula/releases/tag/resourcepacks) 资源包，以准确获取目标值。该资源包支持的游戏版本为 1.7、1.12、1.18和1.20。
 
-游戏(1.18)内资源包效果如下所示:
+游戏(1.20)内资源包效果如下所示:
 
 ![](/img/game.png "资源包界面")
 
